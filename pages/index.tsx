@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { useState } from 'react'
+import AuthButton from '@/components/AuthButton'
+import { useSession } from 'next-auth/react'
 
 export default function Home() {
+  const { data: session } = useSession()
   const [apiResponse, setApiResponse] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -30,6 +33,9 @@ export default function Home() {
       </Head>
       <main className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
         <div className="container mx-auto px-4 py-16">
+          <div className="flex justify-end mb-8">
+            <AuthButton />
+          </div>
           <div className="text-center">
             <h1 className="text-5xl font-bold text-gray-900 mb-4">
               Welcome to Job Links Manager
@@ -37,6 +43,13 @@ export default function Home() {
             <p className="text-xl text-gray-600 mb-8">
               Organize and manage your job application links efficiently
             </p>
+            {session && (
+              <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg inline-block">
+                <p className="text-green-800">
+                  ✓ Signed in as <strong>{session.user?.email}</strong>
+                </p>
+              </div>
+            )}
             <div className="flex gap-4 justify-center mb-8">
               <Link
                 href="/about"
