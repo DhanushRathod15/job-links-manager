@@ -2,10 +2,10 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useState } from 'react'
 import AuthButton from '@/components/AuthButton'
-import { useSession } from 'next-auth/react'
+import { useAuth } from '@/lib/authContext'
 
 export default function Home() {
-  const { data: session } = useSession()
+  const { user } = useAuth()
   const [apiResponse, setApiResponse] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -43,10 +43,10 @@ export default function Home() {
             <p className="text-xl text-gray-600 mb-8">
               Organize and manage your job application links efficiently
             </p>
-            {session && (
+            {user && (
               <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg inline-block">
                 <p className="text-green-800">
-                  ✓ Signed in as <strong>{session.user?.email}</strong>
+                  ✓ Signed in as <strong>{user.email}</strong>
                 </p>
               </div>
             )}

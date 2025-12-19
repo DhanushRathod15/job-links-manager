@@ -2,6 +2,7 @@ import { NextAuthOptions } from 'next-auth'
 import GoogleProvider from 'next-auth/providers/google'
 import connectDB from '@/lib/db'
 import User from '@/models/User'
+import { normalizeEmail } from '@/utils/helpers'
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -28,7 +29,8 @@ export const authOptions: NextAuthOptions = {
 
           await connectDB()
 
-          const existingUser = await User.findOne({ email: user.email })
+          const normalizedEmail = normalizeEmail(user.email)
+          const existingUser = await User.findOne({ email: normalizedEmail })
 
           const updateData: any = {}
           if (user.image && existingUser?.image !== user.image) {
@@ -41,13 +43,13 @@ export const authOptions: NextAuthOptions = {
           if (!existingUser) {
             await User.create({
               name: user.name || 'User',
-              email: user.email,
+              email: normalizedEmail,
               image: user.image,
               refreshToken: account.refresh_token,
             })
           } else if (Object.keys(updateData).length > 0) {
             await User.updateOne(
-              { email: user.email },
+              { email: normalizedEmail },
               updateData
             )
           }
@@ -64,7 +66,8 @@ export const authOptions: NextAuthOptions = {
       if (session.user?.email) {
         try {
           await connectDB()
-          const user = await User.findOne({ email: session.user.email })
+          const normalizedEmail = normalizeEmail(session.user.email)
+          const user = await User.findOne({ email: normalizedEmail })
           if (user) {
             session.user.id = user._id.toString()
             session.user.image = user.image || session.user.image
