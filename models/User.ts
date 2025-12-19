@@ -3,6 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose'
 export interface IUser extends Document {
   name: string
   email: string
+  password: string
   image?: string
   refreshToken?: string
   createdAt: Date
@@ -21,6 +22,10 @@ const UserSchema: Schema = new Schema(
       unique: true,
       lowercase: true,
       trim: true,
+    },
+    password: {
+      type: String,
+      required: true,
     },
     image: {
       type: String,
