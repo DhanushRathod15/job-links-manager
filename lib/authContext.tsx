@@ -25,17 +25,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const router = useRouter()
 
   useEffect(() => {
-    const storedToken = localStorage.getItem('accessToken')
-    const storedRefreshToken = localStorage.getItem('refreshToken')
-    const storedUser = localStorage.getItem('user')
+    const initAuth = async () => {
+      const storedToken = localStorage.getItem('accessToken')
+      const storedRefreshToken = localStorage.getItem('refreshToken')
+      const storedUser = localStorage.getItem('user')
 
-    if (storedToken && storedUser) {
-      setAccessToken(storedToken)
-      setUser(JSON.parse(storedUser))
-    } else if (storedRefreshToken) {
-      refreshAccessToken()
+      if (storedToken && storedUser) {
+        setAccessToken(storedToken)
+        setUser(JSON.parse(storedUser))
+      } else if (storedRefreshToken) {
+        await refreshAccessToken()
+      }
+      setIsLoading(false)
     }
-    setIsLoading(false)
+
+    initAuth()
   }, [])
 
   const refreshAccessToken = async (): Promise<boolean> => {

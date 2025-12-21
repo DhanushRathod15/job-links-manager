@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, Model } from 'mongoose'
 export interface IUser extends Document {
   name: string
   email: string
-  password: string
+  password?: string
   image?: string
   refreshToken?: string
   createdAt: Date
@@ -25,7 +25,7 @@ const UserSchema: Schema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      // Not required - OAuth users don't have passwords
     },
     image: {
       type: String,
